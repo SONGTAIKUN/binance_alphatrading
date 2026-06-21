@@ -1,0 +1,10 @@
+metric,value
+periods,172.0
+triggered_periods,37.0
+applied_periods,20.0
+turnover_guard_skipped_periods,12.0
+trigger_rate,0.21511627906976744
+apply_rate,0.11627906976744186
+turnover_guard_skip_rate,0.06976744186046512
+mean_turnover_add_vs_p9,0.0011519899834102091
+mean_gross_exposure_retention,0.9982963121882026

@@ -1,0 +1,41 @@
+project:
+  name: binance_alphatrading_p16_clean
+  description: Clean runnable package for the latest P16/P15c crypto residual stat-arb baseline.
+
+inputs:
+  panel: ../inputs/p16_replay_panel_slim.csv.gz
+  formula_selections: ../inputs/formula_selections.csv
+
+locked_baseline:
+  name: p16_p15c_extreme_cluster_turnover_clean
+  signal_source: p9_fixed_alphagpt_incremental_score_plus_p15c_cluster_turnover_allocator
+  horizon_hours: 72
+  min_hold_days: 5
+  min_hold_rebalances: 3
+  long_k: 4
+  short_k: 4
+  gross_exposure: 1.0
+  one_way_fee_bps: 4.0
+  one_way_slippage_bps: 2.0
+  default_total_one_way_cost_bps: 6.0
+  neutralize_exposures:
+    - intercept
+    - beta_btc
+    - beta_eth
+    - beta_market
+  risk_control:
+    max_symbol_weight: 0.125
+    short_resid_confirm_rank: 0.35
+    allocation_method: hedged_constrained_projection
+    optimizer_target_gross_mode: clip_gross
+    hedge_penalty: 25.0
+
+latest_baseline:
+  name: p16_p15c_extreme_cluster_turnover
+  output_dir: ../outputs/p16_clean_candidate_package
+  replay_script: ../../../scripts/run_latest_baseline.py
+  replay_panel_parts: ../inputs/p16_replay_panel_slim.csv.gz.parts
+  p9_selected_by_fold: ../outputs/p9_clean_baseline_package/selected_incremental_by_fold.csv
+  p16_selected_by_fold: ../outputs/p16_clean_candidate_package/fixed_selected_extreme_cluster_by_fold.csv
+  p3d_candidate_formulas: ../outputs/p3d_p4_gated_rerank_alphagpt/candidate_formulas.csv
+  p6b_retained_features: ../outputs/p6b_derivatives_feature_expansion/retained_features.csv

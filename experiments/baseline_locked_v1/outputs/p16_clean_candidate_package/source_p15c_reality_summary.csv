@@ -1,0 +1,16 @@
+check,value,pass
+net_delta_vs_p9_positive,0.0108379485462408,True
+sharpe_delta_vs_p9_positive,0.2156353390690948,True
+maxdd_not_worse_than_105x_p9,-1.1235523622588062e-10,True
+return_20bps_delta_positive,0.0096612814318233,True
+return_30bps_delta_positive,0.0088952295944463,True
+turnover_not_higher_than_102pct_p9,1.0030053178578258,True
+gross_retention_90pct,1.057129605573874,True
+cluster_hhi_reduction_3pct,0.0587215162982062,True
+max_cluster_share_reduction_3pct,0.0417560806099767,True
+worst5_delta_vs_p9,0.0070586709229937,True
+bootstrap_delta_vs_p9_q05,-0.0002742128747952,True
+start_fold_positive_vs_p9,0.4782608695652174,True
+symbol_dropout_positive_vs_p9,0.95,True
+strict_mean_abs_market_beta,1.06905630839603e-14,True
+strict_max_abs_market_beta,3.2476712291673593e-13,True

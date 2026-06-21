@@ -1,0 +1,31 @@
+{
+  "name": "p16_p15c_extreme_cluster_turnover_candidate",
+  "status": "candidate_promoted_for_next_review",
+  "parent": "p9_clean_baseline_package",
+  "source_stage": "p15c_extreme_cluster_turnover",
+  "official_baseline_unchanged": "p9_clean_drop_k01_cap010",
+  "candidate_metrics": {
+    "total_return_6bps": 0.16623337593677867,
+    "gross_return_before_cost": 0.2106183896572873,
+    "sharpe_6bps": 2.426798400308199,
+    "max_drawdown": -0.017877398356266117,
+    "mean_turnover": 0.36240003426895684,
+    "return_30bps": 0.0042773406871929875,
+    "cluster_hhi_reduction_vs_p9": 0.05872151629820632,
+    "max_cluster_share_reduction_vs_p9": 0.04175608060997671,
+    "trigger_rate": 0.21511627906976744,
+    "apply_rate": 0.11627906976744186
+  },
+  "delta_vs_p9": {
+    "total_return": 0.010837948546240872,
+    "gross_return_before_cost": 0.011382280341293516,
+    "sharpe": 0.21563533906910948,
+    "return_30bps": 0.008895229594446108
+  },
+  "delta_vs_p15b": {
+    "total_return": 0.006055031179138526,
+    "gross_return_before_cost": 0.006174557577156126,
+    "sharpe": 0.1120686009220937,
+    "return_30bps": 0.005582342916423899
+  }
+}

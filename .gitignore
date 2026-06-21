@@ -1,0 +1,14 @@
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# Restored automatically from split parts on first replay run.
+experiments/baseline_locked_v1/inputs/p16_replay_panel_slim.csv.gz
+
+# Local reruns are intentionally not tracked.
+experiments/baseline_locked_v1/outputs/latest_baseline_replay/
+experiments/baseline_locked_v1/outputs/latest_baseline_replay_*/
