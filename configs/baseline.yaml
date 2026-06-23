@@ -1,0 +1,62 @@
+data:
+  klines_dir: data/klines
+  timeframe: 1h
+  symbols:
+    - ADAUSDT
+    - APTUSDT
+    - ARBUSDT
+    - ATOMUSDT
+    - AVAXUSDT
+    - BCHUSDT
+    - BNBUSDT
+    - BTCUSDT
+    - DOGEUSDT
+    - DOTUSDT
+    - ETCUSDT
+    - ETHUSDT
+    - FILUSDT
+    - LINKUSDT
+    - LTCUSDT
+    - NEARUSDT
+    - OPUSDT
+    - SOLUSDT
+    - UNIUSDT
+    - XRPUSDT
+
+sectors:
+  majors: [BTCUSDT, ETHUSDT, BNBUSDT]
+  l1: [ADAUSDT, APTUSDT, ARBUSDT, ATOMUSDT, AVAXUSDT, DOTUSDT, NEARUSDT, OPUSDT, SOLUSDT]
+  payments: [BCHUSDT, DOGEUSDT, ETCUSDT, LTCUSDT, XRPUSDT]
+  apps: [FILUSDT, LINKUSDT, UNIUSDT]
+
+factor_model:
+  beta_window: 720
+  min_beta_obs: 240
+  residual_z_window: 168
+  feature_windows:
+    short: 4
+    medium: 24
+    long: 168
+
+labels:
+  horizons: [4, 8, 24]
+  execution_delay_bars: 1
+  primary_horizon: 24
+
+portfolio:
+  rebalance_hours: 24
+  long_k: 4
+  short_k: 4
+  gross_exposure: 1.0
+  one_way_fee_bps: 4.0
+  one_way_slippage_bps: 2.0
+  neutralize_exposures: [intercept, beta_btc, beta_eth, beta_market]
+
+walk_forward:
+  train_days: 180
+  test_days: 30
+  step_days: 30
+  mode: rolling
+
+baseline:
+  score: neg_cs_zscore_resid_z

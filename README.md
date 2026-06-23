@@ -2,9 +2,13 @@
 
 这是当前最新一版多币种 crypto residual/stat-arb baseline 的干净可运行包。
 
-本仓库只保留 P16/P15c 这一版 baseline 复现所需的文件：
+本仓库只保留 P16/P15c 这一版 baseline 复现所需的文件，并补齐从原始数据重建研究面板所需的核心脚本：
 
 - `scripts/run_latest_baseline.py`：最新 baseline replay 入口。
+- `configs/baseline.yaml`：20 币 universe、sector 分组、基础 residual/stat-arb 配置。
+- `scripts/run_baseline.py`：从 15m OHLCV 生成 `asset_residual_panel.csv`。
+- `scripts/build_p1_slow_residual_labels.py`、`scripts/run_p2_manual_slow_alpha_grid.py`：P1/P2 慢速 residual label 与手工 alpha grid。
+- `scripts/download_binance_derivatives.py`、`scripts/build_binance_derivatives_panel.py`、`scripts/run_p6b_derivatives_feature_expansion.py`：Binance derivatives 数据下载、面板构建与特征 diagnostics。
 - `src/crypto_stat_arb/`：组合、特征、配置、walk-forward 基础库。
 - `experiments/baseline_locked_v1/inputs/`：固定 walk-forward folds、replay 必需列清单、slim 面板分片。
 - `experiments/baseline_locked_v1/outputs/p9_clean_baseline_package/selected_incremental_by_fold.csv`：P9 每个 fold 由 train/validation 选出的 AlphaGPT 增量公式和参数。
@@ -12,6 +16,12 @@
 - `experiments/baseline_locked_v1/outputs/p3d_p4_gated_rerank_alphagpt/candidate_formulas.csv` 与 `outputs/p6b_derivatives_feature_expansion/retained_features.csv`：replay 固定公式文本和特征映射。
 
 不包含历史实验输出、原始 Binance 下载缓存、archive 目录或 P1-P17 各轮中间产物。
+
+完整研究链路的运行顺序见：
+
+```text
+docs/RESEARCH_PIPELINE.md
+```
 
 ## 运行方式
 
