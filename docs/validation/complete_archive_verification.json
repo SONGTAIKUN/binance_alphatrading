@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "compressed_parts_verified": 8,
+  "source_files_verified_sha256": 46765,
+  "symlinks_verified": 65,
+  "total_archive_regular_files": 46791,
+  "total_archive_regular_bytes": 19605198704,
+  "elapsed_seconds": 25.63,
+  "failures": []
+}

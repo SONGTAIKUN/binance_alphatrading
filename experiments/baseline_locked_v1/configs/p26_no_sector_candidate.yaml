@@ -1,0 +1,90 @@
+project:
+  name: p26_no_sector_residual_v2_candidate
+  status: research_candidate
+  description: >-
+    P15c allocator with an explicitly separated no-sector alpha residual model,
+    versioned portfolio risk model, standard slow residual labels, and P20
+    practical fold-local selection.
+
+inputs:
+  raw_asset_panel: ../inputs/long_history/baseline_panel/asset_residual_panel.csv
+  cached_no_sector_panel: ../outputs/p25_residual_model_bakeoff/residual_panels/legacy_no_sector.csv.gz
+  manual_feature_panel: ../outputs/long_history_nested_oos/inputs/manual_slow_feature_panel_long.csv.gz
+  folds: ../outputs/long_history_nested_oos/inputs/long_formula_selections.csv
+  p15c_run: ../outputs/long_history_nested_oos/p15c_nested/nested_extreme_cluster_run
+
+alpha_residual_model:
+  version: alpha_residual_v2_no_sector_ols720
+  estimator: rolling_ols
+  beta_window_hours: 720
+  min_beta_observations: 240
+  factors:
+    - factor_btc_ret
+    - factor_eth_ret
+    - factor_market_ret
+  sector_factor: disabled
+
+portfolio_risk_model:
+  version: portfolio_risk_v1_p15c_namespaced
+  description: >-
+    Preserve the validated P15c BTC/ETH/market neutralization model, but move
+    its fields into an explicit risk namespace. The alpha residualizer may
+    therefore change without silently changing portfolio risk exposures.
+  estimation_factors:
+    - factor_btc_ret
+    - factor_eth_ret
+    - factor_market_ret
+    - factor_sector_ret
+  neutralize_exposures:
+    - intercept
+    - risk_beta_btc
+    - risk_beta_eth
+    - risk_beta_market
+  allocator_compatibility_aliases:
+    risk_beta_btc: beta_btc
+    risk_beta_eth: beta_eth
+    risk_beta_market: beta_market
+
+labels:
+  version: slow_residual_labels_v2
+  horizons_hours: [48, 72, 96, 168]
+  execution_delay_bars: 1
+  ex_ante_volatility_lookback_hours: 336
+  cross_sectional_transform: centered_rank_minus1_plus1
+  standard_selection_label: label_slow_low_turnover
+  slow_medium_weights:
+    48: 0.20
+    72: 0.30
+    96: 0.30
+    168: 0.20
+  slow_low_turnover_weights:
+    72: 0.25
+    96: 0.35
+    168: 0.40
+  path_aware_lambda: 0.50
+
+selection:
+  protocol: p20_practical_q25_m5
+  validation_days: 90
+  min_cross_section_symbols: 8
+  fallback: p15c
+  warning: >-
+    This protocol was promoted after reviewing P25 protocol sensitivity. P26
+    is a research candidate and is not an untouched out-of-sample estimate.
+
+portfolio:
+  horizon_hours: 72
+  long_fraction: 0.50
+  short_residual_confirmation_rank: 0.35
+  one_way_cost_bps_for_reporting: [0, 6, 8, 15, 20, 30]
+
+audit_gates:
+  max_past_only_beta_error: 1.0e-10
+  max_residual_identity_error: 1.0e-12
+  max_label_formula_error: 1.0e-10
+  max_condition_number_median: 100.0
+  max_bnb_condition_number: 1000.0
+  max_beta_mean_abs_hourly_change: 0.003
+  min_residual_coverage: 0.95
+  min_label_coverage: 0.95
+  max_centered_rank_mean_error: 1.0e-10

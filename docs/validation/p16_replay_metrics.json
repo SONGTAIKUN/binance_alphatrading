@@ -1,0 +1,10 @@
+{
+  "periods": 172,
+  "fold_count": 23,
+  "total_return": 0.16623337966257568,
+  "gross_total_return_before_cost": 0.21061839306472585,
+  "sharpe": 2.4267984501411175,
+  "max_drawdown": -0.01787739835626634,
+  "mean_turnover": 0.36240003058583586,
+  "scope": "Historical fixed-selection replay; same legacy accounting convention, not a corrected continuous ledger."
+}

@@ -46,6 +46,48 @@ METRIC_COLS = [
     "sum_taker_long_short_vol_ratio",
 ]
 
+SOURCE_FILL_LIMITS = {
+    "funding_rate": 8,
+    "funding_interval_hours": 8,
+    "sum_open_interest": 2,
+    "sum_open_interest_value": 2,
+    "count_toptrader_long_short_ratio": 2,
+    "sum_toptrader_long_short_ratio": 2,
+    "count_long_short_ratio": 2,
+    "sum_taker_long_short_vol_ratio": 2,
+    "index_close": 1,
+    "mark_close": 1,
+    "premium_close": 1,
+}
+
+SOURCE_MAX_CURRENT_AGE_HOURS = {
+    "funding_rate": 9.0,
+    "funding_interval_hours": 9.0,
+    "sum_open_interest": 3.0,
+    "sum_open_interest_value": 3.0,
+    "count_toptrader_long_short_ratio": 3.0,
+    "sum_toptrader_long_short_ratio": 3.0,
+    "count_long_short_ratio": 3.0,
+    "sum_taker_long_short_vol_ratio": 3.0,
+    "index_close": 2.0,
+    "mark_close": 2.0,
+    "premium_close": 2.0,
+}
+
+DERIVATIVE_SOURCE_MAP = {
+    "deriv_funding_rate": ("funding_rate",),
+    "deriv_funding_annualized": ("funding_rate", "funding_interval_hours"),
+    "deriv_oi_value": ("sum_open_interest_value",),
+    "deriv_log_oi_value": ("sum_open_interest_value",),
+    "deriv_open_interest": ("sum_open_interest",),
+    "deriv_account_long_short_ratio": ("count_long_short_ratio",),
+    "deriv_top_count_long_short_ratio": ("count_toptrader_long_short_ratio",),
+    "deriv_top_sum_long_short_ratio": ("sum_toptrader_long_short_ratio",),
+    "deriv_taker_long_short_ratio": ("sum_taker_long_short_vol_ratio",),
+    "deriv_mark_index_basis": ("mark_close", "index_close"),
+    "deriv_premium_index": ("premium_close",),
+}
+
 
 def main() -> None:
     parser = argparse.ArgumentParser()
@@ -192,34 +234,22 @@ def concat_drop_duplicate(frames: list[pd.DataFrame]) -> pd.DataFrame:
 
 def apply_asof_fill(symbol: str, base: pd.DataFrame) -> pd.DataFrame:
     base = base.copy()
+    base["timestamp"] = pd.to_datetime(base["timestamp"], utc=True)
     # Keep fills short. Unlimited ffill would turn a missing archive segment into
     # stale "known" data for months, which is a hidden data quality bug.
-    fill_limits = {
-        "funding_rate",
-        "funding_interval_hours",
-    }
-    metric_cols = {
-        "sum_open_interest",
-        "sum_open_interest_value",
-        "count_toptrader_long_short_ratio",
-        "sum_toptrader_long_short_ratio",
-        "count_long_short_ratio",
-        "sum_taker_long_short_vol_ratio",
-    }
-    hourly_price_cols = {
-        "index_close",
-        "mark_close",
-        "premium_close",
-    }
-    for col in fill_limits:
-        if col in base:
-            base[col] = base[col].ffill(limit=8)
-    for col in metric_cols:
-        if col in base:
-            base[col] = base[col].ffill(limit=2)
-    for col in hourly_price_cols:
-        if col in base:
-            base[col] = base[col].ffill(limit=1)
+    for col, limit in SOURCE_FILL_LIMITS.items():
+        if col not in base:
+            continue
+        observed = base[col].notna()
+        last_observed_ts = pd.Series(pd.NaT, index=base.index, dtype="datetime64[ns, UTC]")
+        last_observed_ts.loc[observed] = base.loc[observed, "timestamp"]
+        last_observed_ts = last_observed_ts.ffill()
+        age_hours = (base["timestamp"] - last_observed_ts).dt.total_seconds() / 3600.0
+        filled = base[col].ffill(limit=limit)
+        base[f"{col}_source_observed"] = observed
+        base[f"{col}_source_was_filled"] = (filled.notna() & ~observed).astype(float)
+        base[f"{col}_source_age_hours"] = age_hours.where(filled.notna())
+        base[col] = filled
     base["symbol"] = symbol
     return base
 
@@ -265,6 +295,7 @@ def build_features(frame: pd.DataFrame) -> pd.DataFrame:
     out["deriv_taker_long_short_ratio"] = np.log(x["sum_taker_long_short_vol_ratio_lag1h"].clip(lower=1e-6))
     out["deriv_mark_index_basis"] = x["mark_index_basis_lag1h"]
     out["deriv_premium_index"] = x["premium_close_lag1h"]
+    add_derivative_freshness_columns(out, x)
 
     for col in [
         "deriv_funding_rate",
@@ -302,6 +333,56 @@ def build_features(frame: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def add_derivative_freshness_columns(out: pd.DataFrame, frame: pd.DataFrame) -> None:
+    freshness_cols: list[str] = []
+    age_cols: list[str] = []
+    stale_cols: list[str] = []
+    for output_col, source_cols in DERIVATIVE_SOURCE_MAP.items():
+        ages = []
+        observed_flags = []
+        max_expected_age = 0.0
+        for source_col in source_cols:
+            age_col = f"{source_col}_source_age_hours"
+            observed_col = f"{source_col}_source_observed"
+            if age_col in frame:
+                ages.append(frame[age_col].shift(1) + 1.0)
+                max_expected_age = max(max_expected_age, SOURCE_MAX_CURRENT_AGE_HOURS.get(source_col, 2.0))
+            if observed_col in frame:
+                observed_flags.append(frame[observed_col].shift(1))
+        if ages:
+            source_age = pd.concat(ages, axis=1).max(axis=1)
+        else:
+            source_age = pd.Series(np.nan, index=out.index)
+        if observed_flags:
+            source_observed = pd.concat(observed_flags, axis=1).all(axis=1)
+        else:
+            source_observed = pd.Series(False, index=out.index)
+
+        stale = source_age > max_expected_age
+        decay_denominator = max(max_expected_age, 1.0)
+        decay = 1.0 - (source_age - max_expected_age).clip(lower=0.0) / decay_denominator
+        freshness = np.where(source_age.notna(), np.where(stale, decay.clip(lower=0.0, upper=1.0), 1.0), np.nan)
+
+        age_name = f"{output_col}_source_age_hours"
+        observed_name = f"{output_col}_source_observed_lag1h"
+        stale_name = f"{output_col}_is_stale"
+        freshness_name = f"{output_col}_freshness_weight"
+        out[age_name] = source_age
+        out[observed_name] = source_observed.astype(float).where(source_age.notna())
+        out[stale_name] = stale.astype(float).where(source_age.notna())
+        out[freshness_name] = freshness
+        age_cols.append(age_name)
+        stale_cols.append(stale_name)
+        freshness_cols.append(freshness_name)
+
+    if age_cols:
+        out["deriv_data_quality_max_source_age_hours"] = out[age_cols].max(axis=1)
+    if freshness_cols:
+        out["deriv_data_quality_min_freshness_weight"] = out[freshness_cols].min(axis=1)
+    if stale_cols:
+        out["deriv_data_quality_any_stale"] = out[stale_cols].fillna(0.0).astype(float).gt(0.0).any(axis=1).astype(float)
+
+
 def write_metadata(out: pd.DataFrame, path: Path) -> None:
     import json
 
@@ -313,6 +394,10 @@ def write_metadata(out: pd.DataFrame, path: Path) -> None:
         "columns": out.columns.tolist(),
         "coverage": {col: float(out[col].notna().mean()) for col in out.columns if col not in {"timestamp", "symbol"}},
         "ex_ante_rule": "All raw Binance derivatives fields are shifted by 1 hour before feature construction.",
+        "freshness_rule": (
+            "For each raw source, the panel records source age at the decision timestamp after the 1h lag, "
+            "a stale flag versus source-specific maximum expected age, and a freshness weight."
+        ),
     }
     path.write_text(json.dumps(meta, indent=2), encoding="utf-8")
 

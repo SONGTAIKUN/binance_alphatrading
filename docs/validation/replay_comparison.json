@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "scope": "Fixed-choice P16 replay matches stored metrics within 1e-6; legacy accounting retained",
+  "absolute_differences": {
+    "periods": 0,
+    "fold_count": 0,
+    "total_return": 3.725797004250353e-09,
+    "gross_total_return_before_cost": 3.407436111046991e-09,
+    "sharpe": 4.983293333538086e-08,
+    "max_drawdown": 0.0,
+    "mean_turnover": 3.683121030384484e-09
+  }
+}

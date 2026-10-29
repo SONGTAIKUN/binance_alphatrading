@@ -1,0 +1,125 @@
+{
+  "scope": "Existing output audit only. No corrected PnL, funding ledger, intraperiod prices, or new backtest.",
+  "cadence_assumption": "72h cadence, 1h entry delay, complete hourly panel; expected dates use each stored test_decision_end.",
+  "important": "Missing records do not establish the sign of performance bias. Cash, holding, and liquidation policies require a continuous ledger.",
+  "stages": {
+    "P4": {
+      "folds": 32,
+      "planned_decisions": 288,
+      "recorded_decisions": 245,
+      "missing_decisions": 43,
+      "unexpected_decisions": 0,
+      "calendar_start": "2023-10-15 08:00:00+00:00",
+      "calendar_end": "2026-06-01 08:00:00+00:00",
+      "calendar_hours": 23040.0,
+      "represented_holding_hours": 17640.0,
+      "represented_holding_hours_fraction": 0.765625,
+      "mean_recorded_gross_exposure": 0.27263694863188376,
+      "mean_recorded_rank_ic": 0.039730986774938776,
+      "total_recorded_turnover": 89.24654363193943,
+      "mean_short_guard_removed": 2.2285714285714286,
+      "duplicate_timestamps": 0
+    },
+    "P3d": {
+      "folds": 32,
+      "planned_decisions": 288,
+      "recorded_decisions": 244,
+      "missing_decisions": 44,
+      "unexpected_decisions": 0,
+      "calendar_start": "2023-10-15 08:00:00+00:00",
+      "calendar_end": "2026-06-01 08:00:00+00:00",
+      "calendar_hours": 23040.0,
+      "represented_holding_hours": 17568.0,
+      "represented_holding_hours_fraction": 0.7625,
+      "mean_recorded_gross_exposure": 0.2670399704570678,
+      "mean_recorded_rank_ic": 0.04361245565873032,
+      "total_recorded_turnover": 85.92075006481087,
+      "mean_short_guard_removed": 2.2008196721311477,
+      "duplicate_timestamps": 0
+    },
+    "P9": {
+      "folds": 32,
+      "planned_decisions": 288,
+      "recorded_decisions": 242,
+      "missing_decisions": 46,
+      "unexpected_decisions": 0,
+      "calendar_start": "2023-10-15 08:00:00+00:00",
+      "calendar_end": "2026-06-01 08:00:00+00:00",
+      "calendar_hours": 23040.0,
+      "represented_holding_hours": 17424.0,
+      "represented_holding_hours_fraction": 0.75625,
+      "mean_recorded_gross_exposure": 0.2619909981756424,
+      "mean_recorded_rank_ic": 0.044239165296400054,
+      "total_recorded_turnover": 83.62999767867684,
+      "mean_short_guard_removed": 2.190082644628099,
+      "duplicate_timestamps": 0
+    },
+    "P15c": {
+      "folds": 32,
+      "planned_decisions": 288,
+      "recorded_decisions": 242,
+      "missing_decisions": 46,
+      "unexpected_decisions": 0,
+      "calendar_start": "2023-10-15 08:00:00+00:00",
+      "calendar_end": "2026-06-01 08:00:00+00:00",
+      "calendar_hours": 23040.0,
+      "represented_holding_hours": 17424.0,
+      "represented_holding_hours_fraction": 0.75625,
+      "mean_recorded_gross_exposure": 0.26150730605902583,
+      "mean_recorded_rank_ic": 0.044239165296400054,
+      "total_recorded_turnover": 84.1491993638516,
+      "mean_short_guard_removed": 2.190082644628099,
+      "duplicate_timestamps": 0
+    }
+  },
+  "validation_search_sizes": {
+    "p4_nested/validation_candidate_metrics.csv": {
+      "rows": 8064,
+      "folds": 32,
+      "evaluations_per_fold_min": 252,
+      "evaluations_per_fold_median": 252.0,
+      "evaluations_per_fold_max": 252,
+      "periods": {
+        "min": 31.0,
+        "median": 52.0,
+        "max": 59.0
+      }
+    },
+    "p3d_nested/validation_incremental_metrics.csv": {
+      "rows": 17280,
+      "folds": 32,
+      "evaluations_per_fold_min": 540,
+      "evaluations_per_fold_median": 540.0,
+      "evaluations_per_fold_max": 540,
+      "validation_periods": {
+        "min": 11.0,
+        "median": 25.0,
+        "max": 28.0
+      }
+    },
+    "p9_nested/validation_incremental_metrics.csv": {
+      "rows": 14688,
+      "folds": 32,
+      "evaluations_per_fold_min": 459,
+      "evaluations_per_fold_median": 459.0,
+      "evaluations_per_fold_max": 459,
+      "validation_periods": {
+        "min": 13.0,
+        "median": 25.0,
+        "max": 28.0
+      }
+    },
+    "p15c_nested/validation_extreme_cluster_metrics.csv": {
+      "rows": 1152,
+      "folds": 32,
+      "evaluations_per_fold_min": 36,
+      "evaluations_per_fold_median": 36.0,
+      "evaluations_per_fold_max": 36,
+      "validation_periods": {
+        "min": 13.0,
+        "median": 24.5,
+        "max": 28.0
+      }
+    }
+  }
+}
