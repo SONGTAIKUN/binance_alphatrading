@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="430" viewBox="0 0 960 430" role="img" aria-labelledby="title desc">
+  <title id="title">Binance residual statistical arbitrage research pipeline</title>
+  <desc id="desc">Binance data flows into a past-only residual model, P4 base ranking, AlphaGPT symbolic reranking and the P15c/P16 allocator, with walk-forward evaluation and a separate formula-library branch.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#667b92"/></marker>
+    <style>
+      text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;fill:#162b43}
+      .box{fill:#f3f7fb;stroke:#c4d4e3;stroke-width:1.5}
+      .head{font-size:17px;font-weight:650;text-anchor:middle}
+      .body{font-size:12px;text-anchor:middle;fill:#48617a}
+      .line{fill:none;stroke:#667b92;stroke-width:2;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="960" height="430" rx="16" fill="#ffffff"/>
+  <text x="26" y="34" font-size="20" font-weight="700">Residual relative value + symbolic factor selection</text>
+  <text x="26" y="57" font-size="13" fill="#48617a">Representative research path: P4 → P3d → P9 → P15c/P16</text>
+  <rect class="box" x="382" y="76" width="350" height="75" rx="10"/>
+  <text class="head" x="557" y="101">Symbolic formula library</text>
+  <text class="body" x="557" y="122">Primitives + fixed operators + seeded generation</text>
+  <text class="body" x="557" y="139">Train / validation selection → frozen test</text>
+  <rect class="box" x="20" y="198" width="152" height="87" rx="10"/>
+  <text class="head" x="96" y="224">Binance data</text>
+  <text class="body" x="96" y="246">OHLCV · funding · OI</text>
+  <text class="body" x="96" y="265">15m → complete 1h</text>
+  <rect class="box" x="211" y="198" width="152" height="87" rx="10"/>
+  <text class="head" x="287" y="224">Residual model</text>
+  <text class="body" x="287" y="246">Past-only estimates</text>
+  <text class="body" x="287" y="265">timestamp × symbol</text>
+  <rect class="box" x="402" y="198" width="152" height="87" rx="10"/>
+  <text class="head" x="478" y="224">P4 base ranking</text>
+  <text class="body" x="478" y="246">Relative-value score</text>
+  <text class="body" x="478" y="265">Eligible long / short pool</text>
+  <rect x="593" y="198" width="152" height="87" rx="10" fill="#e9f2fe" stroke="#7fa5d0" stroke-width="1.5"/>
+  <text class="head" x="669" y="224">P3d / P9 rerank</text>
+  <text class="body" x="669" y="246">AlphaGPT-style factors</text>
+  <text class="body" x="669" y="265">Fold-local selection</text>
+  <rect x="784" y="198" width="156" height="87" rx="10" fill="#eaf4ef" stroke="#87ad96" stroke-width="1.5"/>
+  <text class="head" x="862" y="224">P15c / P16</text>
+  <text class="body" x="862" y="246">Portfolio constraints</text>
+  <text class="body" x="862" y="265">Turnover guard + replay</text>
+  <path class="line" d="M172 241H208M363 241H399M554 241H590M745 241H781"/>
+  <path class="line" d="M287 198V113H379"/>
+  <path class="line" d="M669 151V195"/>
+  <rect class="box" x="402" y="335" width="538" height="61" rx="10"/>
+  <text class="head" x="671" y="360">Walk-forward evaluation</text>
+  <text class="body" x="671" y="381">Costs · attribution · saved selections · architecture audit</text>
+  <path class="line" d="M862 285V332"/>
+  <text x="24" y="366" font-size="13" font-weight="600">Research snapshot</text>
+  <text x="24" y="387" font-size="12" fill="#61758a">Continuous ledger and funding work remains.</text>
+</svg>
