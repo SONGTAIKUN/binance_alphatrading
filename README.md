@@ -10,17 +10,7 @@
 
 核心问题：在共同市场波动较强的加密资产中，去除风险因子后的相对便宜 / 昂贵程度，能否在成本与约束下形成可重复的横截面排序信号？符号因子是否带来可识别的增量？
 
-```mermaid
-flowchart LR
-    A[Binance 15m OHLCV<br/>Funding / OI / Premium] --> B[完整 1h 数据与历史可见特征]
-    B --> C[滚动风险因子回归<br/>资产级 residual]
-    C --> D[P4 基础相对价值组合]
-    C --> E[符号候选表达式<br/>按训练与验证窗口筛选]
-    D --> F[P3d / P9 增量 rerank]
-    E --> F
-    F --> G[P15c 组合约束<br/>cluster cap 与 turnover guard]
-    G --> H[Walk-forward test<br/>成本与归因诊断]
-```
+![Residual statistical arbitrage research pipeline](docs/research_pipeline.svg)
 
 研究单位是 `timestamp × symbol`。AlphaGPT 在这里具体指本地实现的符号候选生成与窗口内筛选流程；候选来自预设 primitives、操作符和随机种子。代码没有据此声称实现了强化学习或训练过的语言模型因子发现器。
 
